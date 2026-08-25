@@ -7,8 +7,6 @@ recommendations, metadata, short legally-permitted lyric excerpts, and
 previews, with six interaction modes: Lyrical conversational (default),
 Lyric Prose Recommendation, Explain, Antakshari, Generation, and List.
 
-Phases 1–4 are implemented. Phase 5 (Whisper + local audio ingestion +
-timestamped transcript retrieval) is planned.
 
 ## Setup
 
@@ -38,14 +36,6 @@ Open the UI, paste a YouTube playlist URL (or paste/edit a Markdown
 playlist) and build the index, then chat. Sources are rendered under
 each reply; each cited song shows its provider, an HTML5 preview player
 (when a `preview_url` is available), and a "Lyrics" button.
-
-## Tests
-
-The `tests/` folder was removed from this checkout. The app runs without
-it (nothing in `app/` or `ui/` imports from `tests/`). `pytest` remains
-in `requirements.txt` but is currently unused. To restore verification,
-re-add a `tests/` suite and a root `conftest.py` that puts the repo
-root on `sys.path`.
 
 ## Configuration
 
@@ -100,31 +90,55 @@ data/                  # faiss.index, songs.db, embeddings/
   generates lyric text.
 - **Lyric Prose Recommendation** — single-letter (A–Z) input → multiple
   short lyric excerpts as Antakshari-style examples.
-- **Explain** — low-temperature explanation of a song/the collection.
 - **Antakshari** — first/last-letter chain game against the collection
   (in-memory session, no LLM needed for the core loop).
-- **Generation** — higher-temperature playlist / thematic description /
-  short permitted excerpt / song transitions / original lyric inspired
-  by high-level themes (never concatenated copyrighted lyrics).
-- **List** — "list all my songs" → LLM-formatted numbered list (soft cap
-  100; the sidebar shows the full collection).
 
 Intent is auto-routed by the LLM with a keyword-rule fallback; the UI
 radio can force a mode.
 
-## Scope & invariants
 
-- **The LLM never touches databases directly.** All data access goes
-  through MCP tools (`lyrics-mcp`, `feedback-mcp`, `rag-mcp`) or the
-  orchestrator's MCP-backed helpers.
-- **Copyright & safety:** never return complete or large portions of
-  copyrighted lyrics — only short permitted excerpts (capped at
-  `response.max_lyric_excerpt_words`, default 25), always with
-  provenance. Full-lyrics requests ("give me the entire lyrics",
-  "continue the song") are detected and routed to a safe alternative.
-  Indexed lyrics are a derivative used only for indexing; the LLM/UI
-  never see them.
-- **Offline-first:** after ingestion, the system runs entirely locally.
-  Internet is only needed for inherently external operations (importing
-  playlist metadata, fetching lyrics from LRCLIB, fetching an
-  authorized preview).
+<p align="center">
+  <img src="images/figure1.png" alt="App Logo">
+</p>
+
+## Step 1: Collection
+
+- **Build a Collection:** Add the YouTube playlist link and click **Build from YouTube** to create a collection of songs.
+
+- **Enrich Index:** Adds more detailed metadata and tags to the songs. Enabling this option provides richer song information but **takes longer to process**.
+
+- **Time Bias:** Controls the preference for newer or older songs:
+  - Values between **0.1 and 1.0** → prefer **newer songs**.
+  - Lower values → give relatively more preference to **older songs**.
+
+<p align="center">
+  <img src="images/figure2.png" alt="Build Collection: Normal">
+  <img src="images/figure3.png" alt="Build Collection: Enrich Index">
+</p>
+
+<p align="center">
+  <img src="images/figure4.png" alt="Collection Added to App">
+</p>
+
+
+## Step 2: Ollama Model Selection
+
+The system supports two types of Ollama models: **Cloud (Online)** and **Local (Offline)**.
+
+- **Cloud (Online) Model:** Enter the API key from your Ollama account and click **Set API Key**. Then select the desired cloud model and click **Use cloud model**.
+
+- **Local (Offline) Model:** Download a local model through Ollama. The appropriate model depends on your **PC's hardware configuration**. After downloading the model, click **Use local model**.
+
+<p align="center">
+  <img src="images/figure5.png" alt="Cloud Model Selection">
+  <img src="images/figure6.png" alt="Local Model Selection">
+</p>
+
+
+## Step 3: Chat Mode
+
+The system provides two chat modes for interacting with the AI:
+
+- **Lyrical Conversational:** Enter a prompt and the AI responds with a sequence of sentences formed from song lyrics. The lyrics are generated from the **Collection created in Step 1**.
+
+- **Lyric Prose Recommendation (Antakshari):** Enter a letter, and the AI recommends a sequence of song lyrics beginning with that letter. The responses can include lyrics from **any part of a song**, including lines from the middle of the song.
