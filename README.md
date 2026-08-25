@@ -90,11 +90,6 @@ data/                  # faiss.index, songs.db, embeddings/
   generates lyric text.
 - **Lyric Prose Recommendation** — single-letter (A–Z) input → multiple
   short lyric excerpts as Antakshari-style examples.
-- **Antakshari** — first/last-letter chain game against the collection
-  (in-memory session, no LLM needed for the core loop).
-
-Intent is auto-routed by the LLM with a keyword-rule fallback; the UI
-radio can force a mode.
 
 
 <p align="center">
@@ -141,4 +136,24 @@ The system provides two chat modes for interacting with the AI:
 
 - **Lyrical Conversational:** Enter a prompt and the AI responds with a sequence of sentences formed from song lyrics. The lyrics are generated from the **Collection created in Step 1**.
 
+<p align="center">
+  <img src="images/figure7.png" alt="Chat Mode: Lyrical Conversational">
+</p>
+
+<p align="center">
+  <img src="images/figure9.png" alt="Lyrical Conversational Chat">
+</p>
+
+<p align="center">
+  <img src="images/figure10.png" alt="Lyrical Conversational Chat">
+</p>
+
 - **Lyric Prose Recommendation (Antakshari):** Enter a letter, and the AI recommends a sequence of song lyrics beginning with that letter. The responses can include lyrics from **any part of a song**, including lines from the middle of the song.
+
+<p align="center">
+  <img src="images/figure8.png" alt="Chat Mode: Lyric Prose Recommendation">
+</p>
+
+<p align="center">
+  <img src="images/figure11.png" alt="Lyric Prose Recommendation Chat">
+</p>
