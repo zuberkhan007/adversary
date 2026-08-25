@@ -37,50 +37,7 @@ playlist) and build the index, then chat. Sources are rendered under
 each reply; each cited song shows its provider, an HTML5 preview player
 (when a `preview_url` is available), and a "Lyrics" button.
 
-## Configuration
 
-See `config.yaml`. Key sections:
-
-- `ollama` — `base_url`, `model`, `temperature`, `api_key` (env:
-  `OLLAMA_BASE_URL`, `OLLAMA_MODEL`, `OLLAMA_API_KEY`).
-- `embedding` — Sentence Transformers model (env: `EMBEDDING_MODEL`).
-- `rag` — `top_k`, `rerank_k`, FAISS/SQLite paths.
-- `ranking` — semantic / keyword / feedback / time / context /
-  repetition_penalty weights (experimentally tunable).
-- `personalization` — `default_time_bias`, `diversity_weight`,
-  `feedback_weights` (plays / likes / completion / skips).
-- `response` — `max_lyric_excerpt_words` (default 25), `include_source`.
-- `lyrics` — `provider` (`lrclib` | `musixmatch` | `none`), LRCLIB URL /
-  user-agent, Musixmatch user token (env: `LYRICS_PROVIDER`,
-  `MUSIXMATCH_USER_TOKEN`).
-- `enrichment` — `mode` (`auto` | `lyrics` | `tags` | `both` | `none`),
-  `lyrics_index_words`, `llm_tags` (env: `ENRICHMENT_MODE`).
-- `modes` — `explain_temperature`, `generation_temperature`,
-  `antakshari_rule`, `generation_top_k`, `generation_diversity`.
-
-> **Secrets:** do not commit API keys to `config.yaml`. Use the env
-> overlays (`.env` + `python-dotenv`, already wired in `app/config.py`).
-
-## Layout
-
-```
-app/
-  config.py            # YAML + env config loader
-  main.py              # MusicAssistant orchestration, chat_dispatch
-  llm/                 # Gemma (Ollama OpenAI-compatible client), ollama.py (server/pull helpers)
-  rag/                 # embeddings, vector_store (FAISS+SQLite), retriever, reranker
-  ingestion/            # markdown, youtube, enrichment (lyric + tag)
-  lyrics/              # LyricsProvider Protocol: LRCLIB (default), Musixmatch (stub)
-  mcp/                 # in-process MCP tool registry: feedback, rag, lyrics servers
-  modes/               # intent router + explain / antakshari / generation / list
-  personalization/     # feedback store, ranking, recency
-  safety/              # response validator (excerpt cap, full-lyrics detection)
-ui/
-  flask_app.py         # routes + SSE
-  templates/index.html
-  static/{style.css,app.js}
-data/                  # faiss.index, songs.db, embeddings/
-```
 
 ## Interaction modes
 
