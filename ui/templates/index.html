@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Adversary: AI Music Conversational Assistant</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+  <div id="app">
+    <!-- Top bar -->
+    <header id="topbar">
+      <div class="brand">
+        <span class="logo">♩</span>
+        <div>
+          <div class="brand-title">Adversary</div>
+          <div class="brand-sub">AI Music Conversational Assistant</div>
+        </div>
+      </div>
+      <div id="global-status" class="global-status"></div>
+    </header>
+
+    <!-- Sidebar -->
+    <aside id="sidebar">
+      <section class="panel">
+        <h2>Collection</h2>
+        <label class="checkbox">
+          <input type="checkbox" id="enrich-toggle" />
+          <span>Enrich index (lyrics + tags)</span>
+          <span class="info-icon" title="Fetches lyrics and generates mood/genre tags per song for richer search results. Significantly increases build time. Disable for a faster, title/artist-only index.">&#9432;</span>
+        </label>
+        <input type="text" id="youtube-url" placeholder="YouTube playlist URL or ID" />
+        <button id="build-btn" type="button">Build from YouTube</button>
+        <div id="ingest-progress" class="progress hidden">
+          <div class="bar"><div class="fill"></div></div>
+          <div class="label"></div>
+        </div>
+        <p id="collection-status" class="caption">Status: no index · 0 songs</p>
+
+        <div class="slider-row">
+          <label for="time-bias">Time bias
+            <span class="info-icon" title="Nudges ranking toward newer (+1.0) or older (−1.0) releases. Applied on top of relevance scores — 0.0 means no date preference.">&#9432;</span>
+          </label>
+          <input type="range" id="time-bias" min="-1" max="1" step="0.1" value="0" />
+          <span id="time-bias-value" class="bias-value">0.0</span>
+        </div>
+        <p class="caption faint">+1.0 newer · −1.0 older · 0.0 neutral</p>
+        <button id="clear-collection-btn" type="button" class="secondary">Clear Collection</button>
+      </section>
+
+      <section class="panel">
+        <h2>Ollama Model Selection</h2>
+        <p id="model-status" class="caption"><span class="dot"></span> …</p>
+        <p id="model-active" class="caption faint"></p>
+
+        <div class="tabs">
+          <button type="button" class="tab active" data-tab="cloud">Cloud</button>
+          <button type="button" class="tab" data-tab="local">Local</button>
+        </div>
+
+        <div id="tab-cloud" class="tab-pane">
+          <input type="password" id="api-key" placeholder="Ollama API key" />
+          <button id="set-api-key-btn" type="button" class="secondary">Set API key</button>
+          <button id="clear-api-key-btn" type="button" class="secondary">Clear API Key</button>
+          <input type="text" id="cloud-model" placeholder="Cloud model name" />
+          <button id="use-cloud-btn" type="button">Use cloud model</button>
+          <p id="cloud-note" class="caption faint"></p>
+        </div>
+
+        <div id="tab-local" class="tab-pane hidden">
+          <select id="installed-select"></select>
+          <input type="text" id="local-model" placeholder="Local Ollama model name" class="hidden" />
+          <button id="use-local-btn" type="button">Use local model</button>
+          <div id="pull-progress" class="progress hidden">
+            <div class="bar"><div class="fill"></div></div>
+            <div class="label"></div>
+          </div>
+          <p id="installed-list" class="caption faint"></p>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>Chat mode</h2>
+        <label class="radio"><input type="radio" name="chat-mode" value="lyric" checked /> <span>Lyrical conversational</span></label>
+        <label class="radio"><input type="radio" name="chat-mode" value="prose" /> <span>Lyric Prose Recommendation</span></label>
+        <button id="clear-chat-btn" type="button" class="secondary">Clear Chat History</button>
+      </section>
+    </aside>
+
+    <!-- Chat column -->
+    <main id="chat">
+      <div id="chat-scroll">
+        <div id="antakshari-panel" class="hidden">
+          <div class="antak-header">
+            <strong>Antakshari</strong>
+            <button id="antakshari-stop" type="button" class="secondary">Stop game</button>
+          </div>
+          <div id="antakshari-body"></div>
+        </div>
+        <div id="messages"></div>
+      </div>
+      <form id="chat-form">
+        <input type="text" id="chat-input" placeholder="Ask for a song, a mood, a theme..." autocomplete="off" />
+        <button type="submit" id="send-btn">Send</button>
+      </form>
+    </main>
+
+    <!-- Songs panel -->
+    <aside id="songs">
+      <h2>Indexed songs</h2>
+      <p id="songs-count" class="caption">0 songs in index</p>
+      <div id="songs-list"></div>
+    </aside>
+  </div>
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>

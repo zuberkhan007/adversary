@@ -1,0 +1,45 @@
+ollama:
+  base_url: "http://localhost:11434"
+  model: "deepseek-v4-flash:cloud"
+  temperature: 0.3
+  api_key: ""
+embedding:
+  model: "all-MiniLM-L6-v2"
+rag:
+  faiss_index_path: "data/faiss.index"
+  sqlite_path: "data/songs.db"
+  top_k: 10
+  rerank_k: 5
+ranking:
+  semantic: 0.35
+  keyword: 0.10
+  feedback: 0.20
+  time: 0.10
+  context: 0.0
+  repetition_penalty: 0.10
+personalization:
+  default_time_bias: 0.0
+  diversity_weight: 0.20
+  feedback_weights:
+    plays: 0.4
+    likes: 0.3
+    completion: 0.2
+    skips: 0.1
+response:
+  max_lyric_excerpt_words: 25
+  include_source: true
+lyrics:
+  provider: "lrclib"
+  lrclib_base_url: "https://lrclib.net/api"
+  lrclib_user_agent: "OHH/1.0"
+  musixmatch_user_token: ""
+enrichment:
+  mode: "auto"
+  lyrics_index_words: 100
+  llm_tags: true
+modes:
+  explain_temperature: 0.3
+  generation_temperature: 0.7
+  antakshari_rule: "last_letter"
+  generation_top_k: 10
+  generation_diversity: true
